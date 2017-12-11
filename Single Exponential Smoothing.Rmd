@@ -1,0 +1,70 @@
+---
+title: "Single Exponential Smoothing"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+http://www.stat.cmu.edu/~hseltman/618/LNTS4.pdf
+https://onlinecourses.science.psu.edu/stat510/?q=node/70
+http://masterr.org/r/exponential-smoothing-function/
+https://www.researchgate.net/publication/256086712_Forecasting_Using_Simple_Exponential_Smoothing_Method
+
+Import necessary libraries
+```{r}
+library(RCurl)
+library(gdata)
+library(forecast)
+library(tseries)
+library(ggplot2)
+```
+
+Load single home family sales dataset
+```{r}
+destfile <- "input/single-family-home-sales.xlsx"
+
+if(!file.exists(destfile)){
+  download.file("http://video.udacity-data.com.s3.amazonaws.com/topher/2016/September/57e47a41_single-family-home-sales/single-family-home-sales.xlsx",destfile=destfile,method="libcurl")
+}
+
+sfh_sales <- read.xls (xls = destfile, sheet = 1, header = TRUE)
+```
+
+Feature engineering
+```{r}
+sfh_sales$Month <- as.Date(paste0(sfh_sales$Month, "-01"), format = "%Y-%m-%d")
+```
+
+
+```{r}
+sfh_sales_ts <- ts(data=sfh_sales$Home.Sales, start=1995, frequency=12)
+```
+
+
+```{r}
+ggplot(data=sfh_sales, aes(x=Month, y=Home.Sales)) + geom_line()
+```
+
+```{r}
+sfh_sales$Home.Sales.Clean <- tsclean(ts(sfh_sales$Home.Sales))
+ggplot(data=sfh_sales, aes(x=Month, y=Home.Sales.Clean)) + geom_line()
+```
+
+Time series decomposition
+```{r}
+sfh_sales_ts_dec <- decompose(sfh_sales_ts)
+plot(sfh_sales_ts_dec)
+```
+
+Stationarity based on ADF test
+```{r}
+adf.test(sfh_sales_ts)
+```
+
+
+```{r}
+sfh_sales_fcast1 <- ses(sfh_sales_ts, h=20*12, alpha=0.8, initial="simple")
+plot(forecast(sfh_sales_fcast1, h=25))
+accuracy(sfh_sales_fcast1)
+```
+
