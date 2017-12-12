@@ -61,10 +61,14 @@ Stationarity based on ADF test
 adf.test(sfh_sales_ts)
 ```
 
+```{r}
+predict(sfh_sales_fcast1,n.ahead=10*12)
+```
 
 ```{r}
-sfh_sales_fcast1 <- ses(sfh_sales_ts, h=20*12, alpha=0.8, initial="simple")
-plot(forecast(sfh_sales_fcast1, h=25))
+sfh_sales_fcast1 <- ets(y=sfh_sales_ts, model="ZNN", alpha=0.8)
+plot(sfh_sales_fcast1)
+plot(forecast(sfh_sales_fcast1))
 accuracy(sfh_sales_fcast1)
 ```
 
