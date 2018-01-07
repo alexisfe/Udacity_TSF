@@ -62,11 +62,24 @@ sfh_sales_ses <- ets(y=sfh_sales_ts, model="ZNN", alpha=0.8)
 sfh_sales_ses_fcast <- forecast(sfh_sales_ses, h=20*12)
 window(sfh_sales_ses_fcast$mean, start=2015, frequency=12)
 ```
+<<<<<<< HEAD
 Using a smoothing parameter (α) of 0.6, what is the forecast for December 2015?
 ```{r}
 sfh_sales_ses <- ets(y=sfh_sales_ts, model="ZNN", alpha=0.6)
 sfh_sales_ses_fcast <- forecast(sfh_sales_ses, h=20*12)
 window(sfh_sales_ses_fcast$mean, start=2015, frequency=12)
+=======
+
+```{r}
+predict(sfh_sales_fcast1,n.ahead=10*12)
+```
+
+```{r}
+sfh_sales_fcast1 <- ses(sfh_sales_ts, h=4*12, alpha=0.8, initial="simple")
+plot(sfh_sales_fcast1)
+lines(predict(sfh_sales_fcast1,10*12),col="red")
+accuracy(sfh_sales_fcast1)
+>>>>>>> 6a68ffb58ba30c4085b2b8539fc19beeb72f827c
 ```
 Using a smoothing parameter (α) of 0.2, what is the forecast for December 2015?
 ```{r}
