@@ -37,7 +37,7 @@ sfh_sales$Month <- as.Date(paste0(sfh_sales$Month, "-01"), format = "%Y-%m-%d")
 
 
 ```{r}
-sfh_sales_ts <- ts(data=sfh_sales$Home.Sales, start=1995, frequency=12)
+sfh_sales_ts <- ts(data=sfh_sales$Home.Sales, start=1990, frequency=12)
 ```
 
 
@@ -56,19 +56,21 @@ sfh_sales_ts_dec <- decompose(sfh_sales_ts)
 plot(sfh_sales_ts_dec)
 ```
 
-Stationarity based on ADF test
+Using a smoothing parameter (α) of 0.8, what is the forecast for December 2015?
 ```{r}
-adf.test(sfh_sales_ts)
+sfh_sales_ses <- ets(y=sfh_sales_ts, model="ZNN", alpha=0.8)
+sfh_sales_ses_fcast <- forecast(sfh_sales_ses, h=20*12)
+window(sfh_sales_ses_fcast$mean, start=2015, frequency=12)
 ```
-
+Using a smoothing parameter (α) of 0.6, what is the forecast for December 2015?
 ```{r}
-predict(sfh_sales_fcast1,n.ahead=10*12)
+sfh_sales_ses <- ets(y=sfh_sales_ts, model="ZNN", alpha=0.6)
+sfh_sales_ses_fcast <- forecast(sfh_sales_ses, h=20*12)
+window(sfh_sales_ses_fcast$mean, start=2015, frequency=12)
 ```
-
+Using a smoothing parameter (α) of 0.2, what is the forecast for December 2015?
 ```{r}
-sfh_sales_fcast1 <- ets(y=sfh_sales_ts, model="ZNN", alpha=0.8)
-plot(sfh_sales_fcast1)
-plot(forecast(sfh_sales_fcast1))
-accuracy(sfh_sales_fcast1)
+sfh_sales_ses <- ets(y=sfh_sales_ts, model="ZNN", alpha=0.2)
+sfh_sales_ses_fcast <- forecast(sfh_sales_ses, h=20*12)
+window(sfh_sales_ses_fcast$mean, start=2015, frequency=12)
 ```
-
