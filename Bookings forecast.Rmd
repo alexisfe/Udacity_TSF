@@ -1,0 +1,51 @@
+---
+title: "Bookings forecast"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+Import necessary libraries
+```{r}
+library(RCurl)
+library(gdata)
+library(forecast)
+library(tseries)
+library(ggplot2)
+```
+
+Load bookings dataset
+```{r}
+destfile <- "input/bookings.csv"
+
+if(!file.exists(destfile)){
+  download.file("http://video.udacity-data.com.s3.amazonaws.com/topher/2016/September/57e94998_bookings.csv/bookings.csv.xlsx",destfile=destfile,method="libcurl")
+}
+
+bookings_df <- read.csv(file = destfile, header=TRUE)
+```
+
+Feature engineering
+```{r}
+sfh_sales$Month <- as.Date(paste0(bookings_df$Month, "-01"), format = "%Y-%m-%d")
+```
+
+```{r}
+bookings_ts <- ts(data=bookings_df$Bookings, start=2006, frequency=12)
+```
+
+```{r}
+ggplot(data=bookings_df, aes(x=Month, y=Bookings)) + geom_line()
+```
+
+Time series decomposition
+```{r}
+bookings_ts_dec <- decompose(x=bookings_ts, type="multiplicative")
+plot(bookings_ts_dec)
+```
+
+```{r}
+bookings_model <- ets(y=bookings_ts, model="MAM")
+bookings_fcast <- forecast(bookings_model, h=10*12)
+plot(bookings_fcast)
+```
