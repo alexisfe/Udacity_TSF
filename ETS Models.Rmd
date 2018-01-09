@@ -1,5 +1,5 @@
 ---
-title: "Bookings forecast"
+title: "ETS Models"
 output: 
   html_document: 
     keep_md: yes
@@ -14,7 +14,7 @@ library(tseries)
 library(ggplot2)
 ```
 
-Load single home family sales dataset
+Load bookings dataset
 ```{r}
 destfile <- "input/bookings.csv"
 
@@ -36,7 +36,33 @@ plot(bookings_ts_dec)
 ```
 
 ```{r}
-bookings_model <- ets(y=bookings_ts, model="MAM")
+bookings_model <- ets(y=bookings_ts)
 bookings_fcast <- forecast(bookings_model, h=10*12)
 plot(bookings_fcast)
 ```
+
+Load champagne sales dataset
+```{r}
+destfile <- "input/champagne-sales.xlsx"
+
+if(!file.exists(destfile)){
+  download.file("http://video.udacity-data.com.s3.amazonaws.com/topher/2016/September/57cefe8e_champagne-sales/champagne-sales.xlsx",destfile=destfile,method="libcurl")
+}
+
+champ_df <- read.xls (xls = destfile, sheet = 1, header = TRUE)
+```
+
+
+```{r}
+champ_ts <- ts(data=champ_df$Champagne.Sales, start=2001, frequency=12)
+```
+
+https://anomaly.io/seasonal-trend-decomposition-in-r/
+
+```{r}
+champ_model <- ets(y=champ_ts)
+champ_fcast <- forecast(champ_model, h=10*12)
+plot(champ_fcast)
+```
+
+
