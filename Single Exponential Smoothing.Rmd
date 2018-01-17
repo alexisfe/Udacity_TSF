@@ -5,11 +5,6 @@ output:
     keep_md: yes
 ---
 
-http://www.stat.cmu.edu/~hseltman/618/LNTS4.pdf
-https://onlinecourses.science.psu.edu/stat510/?q=node/70
-http://masterr.org/r/exponential-smoothing-function/
-https://www.researchgate.net/publication/256086712_Forecasting_Using_Simple_Exponential_Smoothing_Method
-
 Import necessary libraries
 ```{r}
 library(RCurl)
