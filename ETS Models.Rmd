@@ -53,10 +53,6 @@ champ_df <- read.xls (xls = destfile, sheet = 1, header = TRUE)
 ```
 
 ```{r}
-plot(x=champ_df$Month, y=champ_df$Champagne.Sales, type="b")
-```
-
-```{r}
 champ_ts <- ts(data=champ_df$Champagne.Sales, start=2001, frequency=12)
 ```
 
@@ -67,10 +63,9 @@ https://a-little-book-of-r-for-time-series.readthedocs.io/en/latest/src/timeseri
 plot.ts(champ_ts)
 ```
 
-
 Time series decomposition
 ```{r}
-plot(decompose(x=bookings_ts, type="additive"))
+plot(decompose(x=bookings_ts))
 ```
 
 ```{r}
@@ -79,11 +74,15 @@ champ_fcast <- forecast(champ_model, h=10*12)
 plot(champ_fcast)
 ```
 
+Build an ETS(M,N,M) model. Use the last 6 periods as a holdout or validation sample, and forecast 6 periods. 
 ```{r}
-champ_ts <- ts(data=headerchamp_df$Champagne.Sales, start=2001, frequency=12)
-champ_model <- ets(y=champ_ts)
-champ_fcast <- forecast(champ_model, h=10*12)
+champ_ts <- ts(data=head(champ_df$Champagne.Sales, -6), start=2001, frequency=12)
+champ_model <- ets(y=champ_ts, model="MNM")
+champ_fcast <- forecast(champ_model, h=6)
 plot(champ_fcast)
 ```
+
+```{r}
+window(champ_fcast$mean, start=2001, frequency=12)
 ```
 
